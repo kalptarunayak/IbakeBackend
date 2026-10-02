@@ -1,0 +1,43 @@
+# ==============================================================================
+# Dockerfile.render for IBake Backend (Context: backend directory)
+# Optimized for Render Web Service Deployment (render.com)
+# ==============================================================================
+
+# Stage 1: Build application with Maven
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+WORKDIR /app
+
+# Cache dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Build application
+COPY src ./src
+RUN mvn clean package -DskipTests -B
+
+# Stage 2: Production JRE runtime
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /app
+
+# Install curl for health check probing
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+
+# Non-root user
+RUN groupadd -r ibake && useradd -r -g ibake -s /bin/false ibake
+
+# Copy packaged JAR
+COPY --from=build /app/target/ibake-backend-*.jar app.jar
+RUN chown -R ibake:ibake /app
+
+USER ibake
+
+# Render defaults PORT to 10000
+ENV PORT=10000
+EXPOSE ${PORT}
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:${PORT}/actuator/health || exit 1
+
+# Container-aware JVM tuning
+ENTRYPOINT ["sh", "-c", "exec java -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=40.0 -XX:+ExitOnOutOfMemoryError -Xss512k -Djava.security.egd=file:/dev/./urandom -Dserver.port=${PORT} -jar app.jar"]

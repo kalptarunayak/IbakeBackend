@@ -73,3 +73,35 @@ java -jar target/ibake-backend-1.0.0.jar
    - `JWT_SECRET`
    - `CORS_ALLOWED_ORIGINS` (pointing to your deployed React frontend URL)
 4. Railway will automatically build the Dockerfile and start the service with healthy `/actuator/health` checks!
+
+---
+
+## ☁️ Render Deployment (render.com)
+
+You can deploy IBake to Render in two ways:
+
+### Option A: Using the Render Blueprint (`render.yaml`)
+1. Push this repository to GitHub/GitLab.
+2. In [Render Dashboard](https://dashboard.render.com), click **New +** → **Blueprint**.
+3. Connect your repository. Render automatically reads `render.yaml` with the configured Dockerfile, health check path (`/actuator/health`), port `10000`, and environment parameters.
+4. Fill in your Supabase JDBC connection credentials (`SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`).
+5. Click **Apply** to deploy!
+
+### Option B: Deploy as a Render Web Service manually
+1. In Render Dashboard, click **New +** → **Web Service**.
+2. Select your repository.
+3. Configure the service settings:
+   - **Environment**: `Docker`
+   - **Region**: `Singapore` (recommended for low latency in India) or closest region
+   - **Dockerfile Path**: `./Dockerfile` (or `./backend/Dockerfile.render`)
+   - **Docker Context**: `.` (root directory)
+   - **Health Check Path**: `/actuator/health`
+4. Add the following **Environment Variables**:
+   - `PORT`: `10000`
+   - `SPRING_DATASOURCE_URL`: `jdbc:postgresql://<SUPABASE_HOST>:6543/postgres?sslmode=require`
+   - `SPRING_DATASOURCE_USERNAME`: `<DB_USERNAME>`
+   - `SPRING_DATASOURCE_PASSWORD`: `<DB_PASSWORD>`
+   - `JWT_SECRET`: Secure 256-bit+ HMAC SHA key
+   - `CORS_ALLOWED_ORIGINS`: `https://your-frontend.onrender.com,https://your-username.github.io`
+5. Click **Create Web Service**. Render builds the multi-stage Docker image and deploys with container-optimized memory limits!
+

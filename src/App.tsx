@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Server, Database, Shield, MapPin, Copy, Check, FileCode, 
   Layers, Terminal, ExternalLink, Cpu, CheckCircle2,
-  Lock, ArrowRight, Eye, RefreshCw
+  Lock, ArrowRight, Eye, RefreshCw, Cloud, Box
 } from 'lucide-react';
 
 interface Endpoint {
@@ -360,6 +360,8 @@ const ENDPOINTS: Record<string, Endpoint[]> = {
 export default function App() {
   const [selectedGroup, setSelectedGroup] = useState<string>('Auth (/api/auth)');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [deployTarget, setDeployTarget] = useState<'render' | 'railway'>('render');
+  const [renderArtifact, setRenderArtifact] = useState<'dockerfile' | 'blueprint'>('dockerfile');
 
   const copyToClipboard = (text: string, key: string) => {
     navigator.clipboard.writeText(text);
@@ -642,8 +644,8 @@ export default function App() {
               <div className="text-3xl font-black italic text-orange-500">200 <span className="text-white text-lg not-italic font-normal">OK</span></div>
             </div>
             <div>
-              <div className="text-[10px] uppercase font-bold text-white/30 mb-1 tracking-widest">Cloud Hub</div>
-              <div className="text-3xl font-black italic text-orange-500 uppercase">Railway</div>
+              <div className="text-[10px] uppercase font-bold text-white/30 mb-1 tracking-widest">Cloud Targets</div>
+              <div className="text-3xl font-black italic text-orange-500 uppercase">Render + Railway</div>
             </div>
             <div className="ml-auto">
               <div className="w-20 h-20 border border-white/20 rounded-full flex items-center justify-center relative">
@@ -658,87 +660,297 @@ export default function App() {
           </div>
         </section>
 
-        {/* Project Files & Railway Deployment Guide */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Project Files & Cloud Deployment Guide */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* File Architecture */}
-          <div className="border border-white/10 bg-[#0E0E10] p-6 sm:p-8">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-orange-500 font-bold block mb-1">File Tree</span>
-            <h3 className="text-2xl font-black tracking-tight uppercase text-white mb-2">
-              Maven Project Artifacts
-            </h3>
-            <p className="text-xs text-white/40 mb-5">
-              Source code organized in layered Java architecture under <code className="text-orange-400 font-mono">backend/</code>.
-            </p>
+          <div className="lg:col-span-5 border border-white/10 bg-[#0E0E10] p-6 sm:p-8 flex flex-col justify-between">
+            <div>
+              <span className="text-[10px] uppercase tracking-[0.3em] text-orange-500 font-bold block mb-1">File Tree</span>
+              <h3 className="text-2xl font-black tracking-tight uppercase text-white mb-2">
+                Deployment Artifacts
+              </h3>
+              <p className="text-xs text-white/40 mb-5">
+                Ready-to-deploy multi-cloud container configuration files for Render and Railway:
+              </p>
 
-            <div className="space-y-2 text-xs font-mono text-white/80">
-              <div className="p-3 bg-white/[0.02] border border-white/10 flex justify-between items-center">
-                <span>📁 backend/pom.xml</span>
-                <span className="text-orange-400 text-[11px] font-bold">Java 17 / Spring Boot 3.2.4</span>
+              <div className="space-y-2 text-xs font-mono text-white/80">
+                <div className="p-3 bg-white/[0.02] border border-white/10 flex justify-between items-center">
+                  <span className="flex items-center gap-1.5"><Box className="w-3.5 h-3.5 text-orange-400" /> /Dockerfile</span>
+                  <span className="text-orange-400 text-[11px] font-bold">Render Root Multi-stage</span>
+                </div>
+                <div className="p-3 bg-white/[0.02] border border-white/10 flex justify-between items-center">
+                  <span className="flex items-center gap-1.5"><Cloud className="w-3.5 h-3.5 text-orange-400" /> /render.yaml</span>
+                  <span className="text-orange-400 text-[11px] font-bold">Render 1-Click Blueprint</span>
+                </div>
+                <div className="p-3 bg-white/[0.02] border border-white/10 flex justify-between items-center">
+                  <span className="flex items-center gap-1.5"><Box className="w-3.5 h-3.5 text-white/50" /> backend/Dockerfile.render</span>
+                  <span className="text-white/60 text-[11px]">Subdirectory Context</span>
+                </div>
+                <div className="p-3 bg-white/[0.02] border border-white/10 flex justify-between items-center">
+                  <span className="flex items-center gap-1.5"><FileCode className="w-3.5 h-3.5 text-white/50" /> backend/pom.xml</span>
+                  <span className="text-white/60 text-[11px]">Spring Boot 3.2.4</span>
+                </div>
+                <div className="p-3 bg-white/[0.02] border border-white/10 flex justify-between items-center">
+                  <span className="flex items-center gap-1.5"><Server className="w-3.5 h-3.5 text-white/50" /> backend/railway.json & toml</span>
+                  <span className="text-white/60 text-[11px]">Railway Platform</span>
+                </div>
+                <div className="p-3 bg-white/[0.02] border border-white/10 flex justify-between items-center">
+                  <span className="flex items-center gap-1.5"><Database className="w-3.5 h-3.5 text-white/50" /> application.yml</span>
+                  <span className="text-white/60 text-[11px]">Supabase Pooler</span>
+                </div>
               </div>
-              <div className="p-3 bg-white/[0.02] border border-white/10 flex justify-between items-center">
-                <span>📁 backend/src/main/resources/application.yml</span>
-                <span className="text-orange-400 text-[11px] font-bold">HikariCP & Supabase Pooler</span>
-              </div>
-              <div className="p-3 bg-white/[0.02] border border-white/10 flex justify-between items-center">
-                <span>📁 backend/Dockerfile</span>
-                <span className="text-orange-400 text-[11px] font-bold">Temurin JRE 17 Multi-stage</span>
-              </div>
-              <div className="p-3 bg-white/[0.02] border border-white/10 flex justify-between items-center">
-                <span>📁 backend/railway.json & railway.toml</span>
-                <span className="text-orange-400 text-[11px] font-bold">One-Click Railway Config</span>
-              </div>
-              <div className="p-3 bg-white/[0.02] border border-white/10 flex justify-between items-center">
-                <span>📁 src/main/java/com/ibake/entity/* (10 Entities)</span>
-                <span className="text-orange-400 text-[11px] font-bold">City Availability Triad</span>
-              </div>
-              <div className="p-3 bg-white/[0.02] border border-white/10 flex justify-between items-center">
-                <span>📁 src/main/java/com/ibake/controller/* (7 Controllers)</span>
-                <span className="text-orange-400 text-[11px] font-bold">@PreAuthorize Security</span>
-              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] text-white/40 font-mono">
+              <span>PORT BINDING: $PORT</span>
+              <span>HEALTH: /actuator/health</span>
             </div>
           </div>
 
-          {/* Railway Deployment Steps */}
-          <div className="border border-white/10 bg-[#0E0E10] p-6 sm:p-8">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-orange-500 font-bold block mb-1">Environment</span>
-            <h3 className="text-2xl font-black tracking-tight uppercase text-white mb-2">
-              Railway & Supabase Config
-            </h3>
-            <p className="text-xs text-white/40 mb-5">
-              Production environment variables defined in Railway deployment dashboard:
-            </p>
-
-            <div className="space-y-3">
-              <div className="p-3.5 bg-white/[0.02] border border-white/10">
-                <div className="flex items-center justify-between text-xs font-mono font-bold text-orange-400">
-                  <span>DATABASE_URL</span>
-                  <span className="text-[10px] text-white/40 font-normal">Supabase JDBC</span>
-                </div>
-                <p className="text-[11px] font-mono text-white/40 mt-1">
-                  jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:6543/postgres?sslmode=require
-                </p>
+          {/* Cloud Deployment Panel (Render / Railway) */}
+          <div className="lg:col-span-7 border border-white/10 bg-[#0E0E10] p-6 sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+              <div>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-orange-500 font-bold block mb-1">Cloud Deployment</span>
+                <h3 className="text-2xl font-black tracking-tight uppercase text-white">
+                  {deployTarget === 'render' ? 'Render Web Service' : 'Railway Service'}
+                </h3>
               </div>
 
-              <div className="p-3.5 bg-white/[0.02] border border-white/10">
-                <div className="flex items-center justify-between text-xs font-mono font-bold text-orange-400">
-                  <span>JWT_SECRET</span>
-                  <span className="text-[10px] text-white/40 font-normal">256-bit Key</span>
-                </div>
-                <p className="text-[11px] font-mono text-white/40 mt-1">
-                  HS512 HMAC-SHA signing secret for stateless user authentication
-                </p>
-              </div>
-
-              <div className="p-3.5 bg-white/[0.02] border border-white/10">
-                <div className="flex items-center justify-between text-xs font-mono font-bold text-orange-400">
-                  <span>CORS_ALLOWED_ORIGINS</span>
-                  <span className="text-[10px] text-white/40 font-normal">React Frontend</span>
-                </div>
-                <p className="text-[11px] font-mono text-white/40 mt-1">
-                  https://your-username.github.io,http://localhost:5173
-                </p>
+              {/* Platform Switcher */}
+              <div className="flex bg-[#0A0A0B] p-1 border border-white/10">
+                <button
+                  onClick={() => setDeployTarget('render')}
+                  className={`px-3 py-1 text-xs font-mono font-bold uppercase transition ${
+                    deployTarget === 'render'
+                      ? 'bg-orange-500 text-black'
+                      : 'text-white/50 hover:text-white'
+                  }`}
+                >
+                  Render
+                </button>
+                <button
+                  onClick={() => setDeployTarget('railway')}
+                  className={`px-3 py-1 text-xs font-mono font-bold uppercase transition ${
+                    deployTarget === 'railway'
+                      ? 'bg-orange-500 text-black'
+                      : 'text-white/50 hover:text-white'
+                  }`}
+                >
+                  Railway
+                </button>
               </div>
             </div>
+
+            {deployTarget === 'render' ? (
+              <div className="space-y-4">
+                {/* Artifact sub-tabs */}
+                <div className="flex items-center justify-between border-b border-white/10 pb-2">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setRenderArtifact('dockerfile')}
+                      className={`text-xs font-mono px-2.5 py-1 border ${
+                        renderArtifact === 'dockerfile'
+                          ? 'border-orange-500 text-orange-400 bg-orange-500/10'
+                          : 'border-transparent text-white/40 hover:text-white'
+                      }`}
+                    >
+                      📄 Dockerfile (Render)
+                    </button>
+                    <button
+                      onClick={() => setRenderArtifact('blueprint')}
+                      className={`text-xs font-mono px-2.5 py-1 border ${
+                        renderArtifact === 'blueprint'
+                          ? 'border-orange-500 text-orange-400 bg-orange-500/10'
+                          : 'border-transparent text-white/40 hover:text-white'
+                      }`}
+                    >
+                      ⚙️ render.yaml (Blueprint)
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      const code = renderArtifact === 'dockerfile'
+                        ? `# Render Dockerfile for Spring Boot
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+WORKDIR /workspace
+COPY backend/pom.xml ./pom.xml
+RUN mvn dependency:go-offline -B
+COPY backend/src ./src
+RUN mvn clean package -DskipTests -B
+
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+RUN groupadd -r ibake && useradd -r -g ibake -s /bin/false ibake
+COPY --from=build /workspace/target/ibake-backend-*.jar app.jar
+RUN chown -R ibake:ibake /app
+USER ibake
+
+ENV PORT=10000
+EXPOSE \${PORT}
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \\
+  CMD curl -f http://localhost:\${PORT}/actuator/health || exit 1
+
+ENTRYPOINT ["sh", "-c", "exec java -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=40.0 -XX:+ExitOnOutOfMemoryError -Xss512k -Djava.security.egd=file:/dev/./urandom -Dserver.port=\${PORT} -jar app.jar"]`
+                        : `services:
+  - type: web
+    name: ibake-backend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: SPRING_DATASOURCE_URL
+        sync: false
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ALLOWED_ORIGINS
+        value: "https://*,http://localhost:3000,http://localhost:5173"`;
+                      copyToClipboard(code, 'render-code');
+                    }}
+                    className="text-xs font-mono text-white/50 hover:text-orange-400 flex items-center gap-1.5 transition"
+                  >
+                    {copiedKey === 'render-code' ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedKey === 'render-code' ? 'Copied!' : 'Copy File'}</span>
+                  </button>
+                </div>
+
+                {/* Code display */}
+                <div className="p-3 bg-[#0A0A0B] border border-white/10 font-mono text-xs overflow-x-auto max-h-56 text-white/80">
+                  {renderArtifact === 'dockerfile' ? (
+                    <pre className="text-[11px] leading-relaxed text-orange-200/90 whitespace-pre">
+{`# Stage 1: Build JAR with Maven & Temurin 17
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+WORKDIR /workspace
+COPY backend/pom.xml ./pom.xml
+RUN mvn dependency:go-offline -B
+COPY backend/src ./src
+RUN mvn clean package -DskipTests -B
+
+# Stage 2: Runtime image (Jammy JRE 17)
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends curl
+RUN groupadd -r ibake && useradd -r -g ibake -s /bin/false ibake
+COPY --from=build /workspace/target/ibake-backend-*.jar app.jar
+RUN chown -R ibake:ibake /app
+USER ibake
+
+# Render dynamic port binding (default 10000)
+ENV PORT=10000
+EXPOSE \${PORT}
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \\
+  CMD curl -f http://localhost:\${PORT}/actuator/health || exit 1
+
+ENTRYPOINT ["sh", "-c", "exec java -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=40.0 -XX:+ExitOnOutOfMemoryError -Xss512k -Djava.security.egd=file:/dev/./urandom -Dserver.port=\${PORT} -jar app.jar"]`}
+                    </pre>
+                  ) : (
+                    <pre className="text-[11px] leading-relaxed text-green-300/90 whitespace-pre">
+{`# render.yaml (Blueprint Spec)
+services:
+  - type: web
+    name: ibake-backend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore # Low latency for Indian market
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: SPRING_DATASOURCE_URL
+        sync: false # Supabase JDBC URL
+      - key: SPRING_DATASOURCE_USERNAME
+        sync: false
+      - key: SPRING_DATASOURCE_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ALLOWED_ORIGINS
+        value: "https://*,http://localhost:3000,http://localhost:5173"`}
+                    </pre>
+                  )}
+                </div>
+
+                {/* Render Environment Checklist */}
+                <div>
+                  <div className="text-[10px] uppercase font-bold text-orange-500 mb-2 tracking-widest">
+                    Required Render Environment Variables
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono">
+                    <div className="p-2.5 bg-white/[0.02] border border-white/10">
+                      <span className="text-orange-400 font-bold">PORT</span>
+                      <span className="text-white/40 block text-[10px] mt-0.5">10000 (Render default)</span>
+                    </div>
+                    <div className="p-2.5 bg-white/[0.02] border border-white/10">
+                      <span className="text-orange-400 font-bold">SPRING_DATASOURCE_URL</span>
+                      <span className="text-white/40 block text-[10px] mt-0.5">jdbc:postgresql://aws-0-ap-south-1...</span>
+                    </div>
+                    <div className="p-2.5 bg-white/[0.02] border border-white/10">
+                      <span className="text-orange-400 font-bold">SPRING_DATASOURCE_PASSWORD</span>
+                      <span className="text-white/40 block text-[10px] mt-0.5">Supabase DB password</span>
+                    </div>
+                    <div className="p-2.5 bg-white/[0.02] border border-white/10">
+                      <span className="text-orange-400 font-bold">JWT_SECRET</span>
+                      <span className="text-white/40 block text-[10px] mt-0.5">Render Auto-generated 256-bit key</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <div className="p-3.5 bg-white/[0.02] border border-white/10">
+                  <div className="flex items-center justify-between text-xs font-mono font-bold text-orange-400">
+                    <span>DATABASE_URL</span>
+                    <span className="text-[10px] text-white/40 font-normal">Supabase JDBC</span>
+                  </div>
+                  <p className="text-[11px] font-mono text-white/40 mt-1">
+                    jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:6543/postgres?sslmode=require
+                  </p>
+                </div>
+
+                <div className="p-3.5 bg-white/[0.02] border border-white/10">
+                  <div className="flex items-center justify-between text-xs font-mono font-bold text-orange-400">
+                    <span>JWT_SECRET</span>
+                    <span className="text-[10px] text-white/40 font-normal">256-bit Key</span>
+                  </div>
+                  <p className="text-[11px] font-mono text-white/40 mt-1">
+                    HS512 HMAC-SHA signing secret for stateless user authentication
+                  </p>
+                </div>
+
+                <div className="p-3.5 bg-white/[0.02] border border-white/10">
+                  <div className="flex items-center justify-between text-xs font-mono font-bold text-orange-400">
+                    <span>CORS_ALLOWED_ORIGINS</span>
+                    <span className="text-[10px] text-white/40 font-normal">React Frontend</span>
+                  </div>
+                  <p className="text-[11px] font-mono text-white/40 mt-1">
+                    https://your-username.github.io,http://localhost:5173
+                  </p>
+                </div>
+
+                <div className="p-3.5 bg-white/[0.02] border border-white/10">
+                  <div className="flex items-center justify-between text-xs font-mono font-bold text-orange-400">
+                    <span>PORT</span>
+                    <span className="text-[10px] text-white/40 font-normal">Railway Injected</span>
+                  </div>
+                  <p className="text-[11px] font-mono text-white/40 mt-1">
+                    Railway sets PORT dynamically (defaults to 8080 or random port)
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </main>
