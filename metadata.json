@@ -1,0 +1,6 @@
+{
+  "name": "IBake - Bakery E-Commerce API",
+  "description": "Enterprise Spring Boot 3 REST API for IBake bakery e-commerce platform with PostgreSQL (Supabase), multi-vendor city availability, JWT security, and Railway deployment.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
