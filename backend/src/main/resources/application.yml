@@ -61,3 +61,15 @@ logging:
     root: INFO
     com.ibake: DEBUG
     org.springframework.security: INFO
+
+# OpenAPI / Swagger Documentation Settings
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+    tryItOutEnabled: true
+    displayRequestDuration: true
+

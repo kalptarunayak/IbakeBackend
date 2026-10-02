@@ -61,8 +61,17 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/cities").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/banners").permitAll()
-                // Actuator health check for Railway deployment
+                // Actuator health check
                 .requestMatchers("/actuator/**").permitAll()
+                // Swagger UI & OpenAPI 3 Documentation endpoints
+                .requestMatchers(
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/v3/api-docs/**",
+                    "/v3/api-docs.yaml",
+                    "/swagger-resources/**",
+                    "/webjars/**"
+                ).permitAll()
                 // All other endpoints require authentication (role checks are handled via @PreAuthorize)
                 .anyRequest().authenticated()
             );

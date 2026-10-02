@@ -50,6 +50,7 @@ All sensitive values are configured through environment variables:
 
 ## 📦 Build & Local Run
 
+### Option 1: Terminal / Command Line
 ```bash
 # Clone the repository and navigate to backend
 cd backend
@@ -57,9 +58,29 @@ cd backend
 # Build project with Maven
 mvn clean package -DskipTests
 
-# Run the Spring Boot application
+# Run the Spring Boot application (uses embedded Tomcat on port 8080)
 java -jar target/ibake-backend-1.0.0.jar
 ```
+Or directly with Maven:
+```bash
+mvn spring-boot:run
+```
+
+### Option 2: IntelliJ IDEA (Fixing "Server is not specified")
+Spring Boot applications have an **embedded Tomcat web server** built-in and do **NOT** use external application servers (Tomcat/TomEE/GlassFish). If you see `Server is not specified`:
+
+1. **Delete any accidental "Tomcat/Server" configuration**:
+   - Go to **Run** → **Edit Configurations...**
+   - If there is a configuration under *Tomcat Server*, *TomEE*, or *Application Server* showing *"Server is not specified"*, select it and click **Delete (-)**.
+2. **Run via `IBakeApplication.java`**:
+   - In IntelliJ Project tree, navigate to:  
+     `backend/src/main/java/com/ibake/IBakeApplication.java`
+   - Right-click `IBakeApplication.java` (or click the green **▶** play icon next to `public class IBakeApplication`)
+   - Click **Run 'IBakeApplication'**
+3. **Or run via Maven Tool Window**:
+   - Open the **Maven** sidebar (right side of IntelliJ).
+   - If `ibake-backend` is not visible, click **+** and select `backend/pom.xml`.
+   - Expand `ibake-backend` → `Plugins` → `spring-boot` → double-click `spring-boot:run`.
 
 ---
 
